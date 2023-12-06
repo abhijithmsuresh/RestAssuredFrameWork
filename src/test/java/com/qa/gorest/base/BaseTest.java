@@ -24,13 +24,13 @@ public class BaseTest {
 	
 	@Parameters({"baseURI"})
 	@BeforeTest
-	public void setUp(String baseURI) {
+	public void setUp() {
 		RestAssured.filters(new AllureRestAssured());
 		
 		config = new ConfigurationManager();
 		prop = config.initProp();
-		this.baseURI=baseURI;
-		//String baseURI = prop.getProperty("baseURI");
+		//this.baseURI=baseURI;
+		String baseURI = prop.getProperty("baseURI");
 		restClient = new RestClient(prop, baseURI);
 	}
 
