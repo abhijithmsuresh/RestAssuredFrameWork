@@ -1,0 +1,44 @@
+pipeline 
+{
+    agent any
+    
+    tools{
+        maven 'maven'
+    }
+
+    stages 
+    {
+        stage('Build')
+         {
+            steps {
+            git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                bat "mvn -Dmaven.test.failure.ignore=true clean package"
+            }
+        }
+        stage('deploye to QA') {
+            steps {
+                echo 'deploye to qa done..'
+            }
+        }
+        stage('Regression API Automation Test') {
+            steps {
+                catchError(buildResult:'SUCCESS', stageResult: 'FAILURE'){
+                git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                bat "mvn clean test -Dsurefire.suiteXmlFiles = src\test\resource\TestRunners\testng_regression.xml"
+                } 
+                
+                 stage('deploye to stage') {
+            steps {
+                echo 'deploye to stage done..'
+            }
+        }
+        stage('Regression API Automation Test') {
+            steps {
+                catchError(buildResult:'SUCCESS', stageResult: 'FAILURE'){
+                git 'https://github.com/jglick/simple-maven-project-with-tests.git'
+                bat "mvn clean test -Dsurefire.suiteXmlFiles = src\test\resource\TestRunners\testng_regression.xml"
+                } 
+            }
+        }
+    }
+}
